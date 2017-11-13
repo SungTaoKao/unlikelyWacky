@@ -67,7 +67,7 @@ class Fleet extends CSV_Model
         }
         if ($id[0] != 'U' || strlen($id) <= 1 || strlen($id) > 3)
         {
-                $this->form_validation->set_message('id', 'The {field} field should start with U and end with a number.The max length is 3');
+                $this->form_validation->set_message('id', 'The {field} field should start with U and end with a number.The max length is 3.');
                 return FALSE;
         }
         else
@@ -78,7 +78,7 @@ class Fleet extends CSV_Model
             for ($i=0; $i<strlen($numafterU); $i++) {  
 
                 if( ! is_numeric($numafterU[$i]) ) {
-                    $this->form_validation->set_message('id', 'The {field} field should start with U and end with a number.The max length is 3');
+                    $this->form_validation->set_message('id', 'The {field} field should start with U and end with a number.The max length is 3.');
                     return FALSE;
                 } 
             }  
@@ -131,7 +131,7 @@ class Fleet extends CSV_Model
 
 
         if($this->fleet->id_check($id) == FALSE) {
-            $this->form_validation->set_message('id', 'The {field} field should start with U.');
+            $this->form_validation->set_message('id', 'The {field} field should start with U and end with a number.The max length is 3.');
             return FALSE;
         }
 
