@@ -92,14 +92,6 @@ class Show extends Application
         $fields = array(
             'id'  => form_label('id: ') . form_input('id', $plane->id,['class' => 'form-control']),
             'recognizedPlane' => form_label('recognized plane:') . form_dropdown('wackyid',$this->airplanesWacky->getAllid(), $plane->wackyid, 'id="wackyselect"',['class' => 'form-control']),
-            // 'fmanufacturer'  => form_label('Manufacturer') . form_input('manufacturer', $plane->manufacturer),
-            // 'fmodel'      => form_label('Model') . form_input(array('name'=>'size','value' => $plane->model, 'readonly'=>'readonly')),
-            // 'fprice'     => form_label('Price') . form_input('price', $plane->price),
-            // 'fseats'     => form_label('Seats') . form_input('seats', $plane->seats),
-            // 'freach'     => form_label('Reach') . form_input('reach', $plane->reach),
-            // 'fcruise'     => form_label('Cruise') . form_input('cruise', $plane->cruise),
-            // 'ftakeoff'     => form_label('Takeoff') . form_input('takeoff', $plane->takeoff),
-            // 'fhourly'     => form_label('Hourly') . form_input('hourly', $plane->hourly),
              'zsubmit'    => form_submit('submit', 'Update the plane',['class' => 'btn btn-success']),
         );
         $this->data = array_merge($this->data, $fields);
@@ -118,9 +110,24 @@ class Show extends Application
     public function submit()
     {
 
+
+        // retrieve & update data transfer buffer
+        $plane = (array) $this->session->userdata('plane');
+        //the seledted wacky plane
+        $postedwackyid = $this->input->post()['wackyid'];
+        $postid = $this->input->post()['id'];
+
+
         // setup for validation
         $this->load->library('form_validation');
         $this->form_validation->set_rules($this->fleet->rules());
+
+        //not valid;cannot override other plane
+        if($plane['id'] != $postid && $this->fleet->exists($postid)) {
+            $this->alert('<strong>Validation errors!<strong><br>' . '<p>Plane exists.</p>', 'danger');
+            $this->showit();
+            return;
+        }
 
         //not valid
         if(!$this->form_validation->run()) {
@@ -131,13 +138,6 @@ class Show extends Application
 
 
 
-
-        // retrieve & update data transfer buffer
-        $plane = (array) $this->session->userdata('plane');
-
-
-        //the seledted wacky plane
-        $postedwackyid = $this->input->post()['wackyid'];
         $selecedwackyplane = (array) $this-> airplanesWacky->getPlaneById_Remove_id_key($postedwackyid);
 
         $selecedwackyplane = array_merge($plane, $selecedwackyplane);
